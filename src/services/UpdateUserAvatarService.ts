@@ -3,6 +3,7 @@ import fs from 'fs';
 
 import { getRepository } from 'typeorm';
 
+import AppError from '../errors/AppError';
 import User from '../models/User';
 import uploadConfig from '../config/upload';
 
@@ -20,7 +21,7 @@ class UpdateUserAvatarService {
     });
 
     if (!user) {
-      throw new Error('Only authenticated users can change avatar.');
+      throw new AppError('Only authenticated users can change avatar.', 401);
     }
 
     if (user.avatar) {
