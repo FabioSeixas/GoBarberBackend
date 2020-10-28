@@ -1,4 +1,4 @@
-import { getRepository, GetRepository, Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 
