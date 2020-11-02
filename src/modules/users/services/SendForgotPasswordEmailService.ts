@@ -3,6 +3,7 @@ import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import AppError from '@shared/errors/AppError';
+import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
 
 interface Request {
   email: string;
@@ -16,6 +17,9 @@ class SendForgotPasswordEmailService {
 
     @inject('MailProvider')
     private mailProvider: IMailProvider,
+
+    @inject('UserTokensRepository')
+    private userTokensRepository: IUserTokensRepository,
   ) {}
 
   public async execute({ email }: Request): Promise<void> {
@@ -25,7 +29,9 @@ class SendForgotPasswordEmailService {
       throw new AppError('Informed email not founded', 400);
     }
 
-    this.mailProvider.sendMail(email, 'anything');
+    const token = await this.userTokensRepository.generate(user.id);
+
+    await this.mailProvider.sendMail(email, 'anything');
   }
 }
 
