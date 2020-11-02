@@ -29,7 +29,7 @@ class SendForgotPasswordEmailService {
       throw new AppError('Informed email not founded', 400);
     }
 
-    const token = await this.userTokensRepository.generate(user.id);
+    await this.userTokensRepository.generate(user.id);
 
     await this.mailProvider.sendMail(email, 'anything');
   }
