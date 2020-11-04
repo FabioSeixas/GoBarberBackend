@@ -5,16 +5,21 @@ import FakeStorageProvider from '@shared/container/providers/StorageProvider/fak
 
 import UpdateAvatarService from '@modules/users/services/UpdateUserAvatarService';
 
-describe('UpdateAvatar', () => {
-  it('should be able to upload an avatar', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
+let fakeUsersRepository: FakeUsersRepository;
+let fakeStorageProvider: FakeStorageProvider;
+let updateAvatarService: UpdateAvatarService;
 
-    const fakeStorageProvider = new FakeStorageProvider();
-    const updateAvatarService = new UpdateAvatarService(
+describe('UpdateAvatar', () => {
+  beforeEach(() => {
+    fakeUsersRepository = new FakeUsersRepository();
+    fakeStorageProvider = new FakeStorageProvider();
+    updateAvatarService = new UpdateAvatarService(
       fakeUsersRepository,
       fakeStorageProvider,
     );
+  });
 
+  it('should be able to upload an avatar', async () => {
     const user = await fakeUsersRepository.create({
       name: 'fabio',
       email: 'emaildefault@gmail.com',
@@ -31,14 +36,6 @@ describe('UpdateAvatar', () => {
   });
 
   it('should delete an old avatar to update a new one', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
-
-    const updateAvatarService = new UpdateAvatarService(
-      fakeUsersRepository,
-      fakeStorageProvider,
-    );
-
     const deleteFile = jest.spyOn(fakeStorageProvider, 'deleteFile');
 
     const user = await fakeUsersRepository.create({
@@ -62,13 +59,6 @@ describe('UpdateAvatar', () => {
   });
 
   it('should not be able to update avatar for an unexistent user', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
-    const updateAvatarService = new UpdateAvatarService(
-      fakeUsersRepository,
-      fakeStorageProvider,
-    );
-
     await expect(
       updateAvatarService.execute({
         user_id: 'inexistentId',
