@@ -1,4 +1,4 @@
-import { startOfHour } from 'date-fns';
+import { startOfHour, isBefore, getHours } from 'date-fns';
 import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
@@ -25,6 +25,18 @@ class CreateAppointmentService {
     date,
   }: RequestDTO): Promise<Appointment> {
     const appointmentDate = startOfHour(date);
+
+    if (isBefore(appointmentDate, Date.now())) {
+      throw new AppError('Appointment can not be created on a past date');
+    }
+
+    if (user_id === provider_id) {
+      throw new AppError('User and Provider can not be the same person');
+    }
+
+    if (getHours(appointmentDate) > 17 || getHours(appointmentDate) < 8) {
+      throw new AppError('Appointments can be booked between 8am and 5pm');
+    }
 
     const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
       appointmentDate,
