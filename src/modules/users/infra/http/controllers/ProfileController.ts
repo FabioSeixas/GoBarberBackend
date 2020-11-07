@@ -33,6 +33,6 @@ export default class ProfileController {
 
     delete user.password;
 
-    return response.status(204).json({});
+    return response.json(user);
   }
 }
