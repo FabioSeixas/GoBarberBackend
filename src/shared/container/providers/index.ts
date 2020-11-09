@@ -9,6 +9,9 @@ import EtherealMailProvider from '@shared/container/providers/MailProvider/imple
 import IMailTemplateProvider from '@shared/container/providers/MailTemplateProvider/models/IMailTemplateProvider';
 import HandbarsMailTemplateProvider from '@shared/container/providers/MailTemplateProvider/implementations/HandlebarsMailTemplateProvider';
 
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import RedisCacheProvider from '@shared/container/providers/CacheProvider/implementations/RedisCacheProvider';
+
 container.registerSingleton<IStorageProvider>(
   'StorageProvider',
   DiskStorageProvider,
@@ -22,4 +25,9 @@ container.registerSingleton<IMailTemplateProvider>(
 container.registerInstance<IMailProvider>(
   'MailProvider',
   container.resolve(EtherealMailProvider),
+);
+
+container.registerSingleton<ICacheProvider>(
+  'CacheProvider',
+  RedisCacheProvider,
 );

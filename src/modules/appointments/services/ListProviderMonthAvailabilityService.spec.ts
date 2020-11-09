@@ -1,17 +1,14 @@
-// import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository';
 import FakeAppointmentsRepository from '@modules/appointments/repositories/fakes/FakeAppointmentsRepository';
 
 import ListProviderMonthAvailabilityService from '@modules/appointments/services/ListProviderMonthAvailabilityService';
 
 // import AppError from '@shared/errors/AppError';
 
-// let fakeUsersRepository: FakeUsersRepository;
 let fakeAppointmentsRepository: FakeAppointmentsRepository;
 let listProviderMonthAvailability: ListProviderMonthAvailabilityService;
 
 describe('ListProviderMonthAvailability', () => {
   beforeEach(() => {
-    // fakeUsersRepository = new FakeUsersRepository();
     fakeAppointmentsRepository = new FakeAppointmentsRepository();
 
     listProviderMonthAvailability = new ListProviderMonthAvailabilityService(
@@ -20,6 +17,10 @@ describe('ListProviderMonthAvailability', () => {
   });
 
   it('should be able to retrieve providers month availability', async () => {
+    jest.spyOn(Date, 'now').mockImplementation(() => {
+      return new Date(2020, 4, 19, 17, 0, 1).getTime();
+    });
+
     await fakeAppointmentsRepository.create({
       provider_id: 'user_id',
       user_id: '123123',
@@ -94,7 +95,7 @@ describe('ListProviderMonthAvailability', () => {
 
     expect(availability).toEqual(
       expect.arrayContaining([
-        { day: 19, available: true },
+        { day: 19, available: false },
         { day: 20, available: false },
         { day: 21, available: true },
       ]),
